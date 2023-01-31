@@ -1,13 +1,13 @@
 <?php
-  
+
 namespace App\Http\Controllers\Auth;
-  
+
 use App\Http\Controllers\Controller;
 use Socialite;
 use Auth;
 use Exception;
 use App\Models\User;
-  
+
 class FacebookController extends Controller
 {
     /**
@@ -19,7 +19,7 @@ class FacebookController extends Controller
     {
         return Socialite::driver('facebook')->redirect();
     }
-      
+
     /**
      * Create a new controller instance.
      *
@@ -28,30 +28,30 @@ class FacebookController extends Controller
     public function handleFacebookCallback()
     {
         try {
-    
+
             $user = Socialite::driver('facebook')->user();
-     
+
             $finduser = User::where('facebook_id', $user->id)->first();
-     
-            if($finduser){
-     
+
+            if ($finduser) {
+
                 Auth::login($finduser);
-    
-                return redirect('/home');
-     
-            }else{
+
+                return redirect('/');
+
+            } else {
                 $newUser = User::create([
                     'name' => $user->name,
                     'email' => $user->email,
-                    'facebook_id'=> $user->id,
+                    'facebook_id' => $user->id,
                     'password' => encrypt('123456dummy')
                 ]);
-    
+
                 Auth::login($newUser);
-     
-                return redirect('/home');
+
+                return redirect('/');
             }
-    
+
         } catch (Exception $e) {
             dd($e->getMessage());
         }

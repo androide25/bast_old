@@ -42,9 +42,9 @@ class LoginController extends Controller
 
     /**
      * Redirect the user to the Google authentication page.
-    *
-    * @return \Illuminate\Http\Response
-    */
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function redirectToProvider()
     {
         return Socialite::driver('google')->redirect();
@@ -63,23 +63,23 @@ class LoginController extends Controller
             return redirect('/login');
         }
         // only allow people with @company.com to login
-        if(explode("@", $user->email)[1] !== 'company.com'){
+        if (explode("@", $user->email)[1] !== 'company.com') {
             return redirect()->to('/');
         }
         // check if they're an existing user
         $existingUser = User::where('email', $user->email)->first();
-        if($existingUser){
+        if ($existingUser) {
             // log them in
             auth()->login($existingUser, true);
         } else {
             // create a new user
-            $newUser                  = new User;
-            $newUser->name            = $user->name;
-            $newUser->email           = $user->email;
-            $newUser->google_id       = $user->id;            
+            $newUser = new User;
+            $newUser->name = $user->name;
+            $newUser->email = $user->email;
+            $newUser->google_id = $user->id;
             $newUser->save();
             auth()->login($newUser, true);
         }
-        return redirect()->to('/home');
+        return redirect()->to('/welcome');
     }
 }
